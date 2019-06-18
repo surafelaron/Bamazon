@@ -61,6 +61,22 @@ var connection = mysql.createConnection({
                       var quantity = result.quantity;
                       if(quantity > res[0].stock_quantity){
                           console.log("sorry we only have " + res[0].stock_quantity + " number of " + res[0].product_name + "!!")
+                      }else{
+                          var newStock = res[0].stock_quantity - quantity;
+                          connection.query("UPDATE product SET ? WHERE ?",[
+                              {
+                                  stock_quantity: newStock
+                              },
+                              {
+                                  id: res[0].id
+                              }
+                          ],function(err, update){
+                              if(err) throw err;
+                              var totalPrice = res[0].price * quantity;
+                              console.log("=====================================");
+                              console.log("Order been successfully processed!!!");
+                              console.log("you have been charged " + totalPrice + "$ .");
+                          })
                       }
                   })
               }
